@@ -23,10 +23,10 @@ const prod10 = new Producto(10, "Decoracion", "Ramo de flores de tela", 3500)
 
 const catalogo = []
 catalogo.push(prod1, prod2, prod3, prod4, prod5, prod6, prod7, prod8, prod9, prod10)
-console.log(catalogo)
 
+// funcion para mostrar por consola los arrays con objetos Producto
 function mostrarArrayProducto(array) {
-    console.log(`\n ID  |     Categoria    |    Nombre  |  Precio`)
+    console.log(`\nID  |     Categoria    |    Nombre  |  Precio`)
     array.forEach(
         prod => prod.mostrarProducto()
     )
@@ -35,6 +35,7 @@ function mostrarArrayProducto(array) {
 function agregarProds(catalogo, carrito) {
     let eleccion
     // muestro catalogo por console.log 
+    console.log(`\nCatalogo:`)
     mostrarArrayProducto(catalogo)
 
     do {
@@ -43,14 +44,18 @@ function agregarProds(catalogo, carrito) {
             eleccion = parseInt(prompt(`El valor ingresado no es una opcion correcta. Ingrese un ID correcto`))
         }
 
-        if (eleccion != 0) {
+        // aunque la eleccion sea 0, el ciclo se va a realizar por completo, asi que controlo que no se agrege un elemento con indice -1
+         if (eleccion != 0) {
             carrito.push(catalogo[eleccion - 1])
-            console.log(`${catalogo[eleccion - 1].categoria}, de ID ${catalogo[eleccion - 1].id} agregado exitosamente al carrito !`)
+            console.log(`Producto ${catalogo[eleccion - 1].categoria}, de ID ${catalogo[eleccion - 1].id} agregado exitosamente al carrito !`)
         }
     }
     while (eleccion != 0)
+    // cada vez que agrego elementos al carrito, lo devuelvo ordenado por id para que sea mas facil de visualizar en operaciones posteriores
     carrito = carrito.sort((a, b) => a.id - b.id)
+    alert(`Se han agregado exitosamente los productos al carrito`)
 }
+
 
 function verCarrito(carrito) {
     let valorCarrito = carrito.reduce((acum, prod) => acum + prod.precio, 0)
@@ -62,6 +67,7 @@ function verCarrito(carrito) {
     }
     return valorCarrito
 }
+
 
 function elminarCarrito(carrito) {
     let cant 
@@ -78,14 +84,18 @@ function elminarCarrito(carrito) {
         let indice = carrId.indexOf(borrar)
         let ultIndice = carrId.lastIndexOf(borrar)
 
+        if (borrar == 0){
+            alert(`Se ha cancelado la operacion. No se elimino ningun producto del carrito.`)
+        }
+
         // si la busqueda del indice da -1, es porque no existe prod con ese id
-        if (indice < 0){
+        else if (indice < 0){
             alert(`No se encontraron productos con ese ID`)
             return
         }
 
         // si el primer y el ultimo indice son iguales, significa que existe un solo producto con ese id
-        if (indice == ultIndice){
+        else if (indice == ultIndice){
             carrito.splice(indice, 1)
             alert(`El carrito ha sido actualizado`)
             mostrarArrayProducto(carrito)
@@ -93,9 +103,11 @@ function elminarCarrito(carrito) {
         else{
             // la variable diferencia es la cantidad de productos que se encontraron con ese id
             let diferencia = (ultIndice - indice) + 1
-            do{
-            cant = parseInt(prompt(`Se han encontrado ${diferencia} productos con ese ID. ¿Cuantos desea eliminar?`))
-        }while (cant > diferencia)
+            
+            let cant = parseInt(prompt(`Se han encontrado ${diferencia} productos con ese ID. ¿Cuantos desea eliminar?`))
+            while (cant > diferencia){
+                cant = parseInt(prompt(`No se pueden eliminar mas productos de los  que ya tiene en el carrito. (${diferencia}). Por favor intente nuevamente`))
+            }
             carrito.splice(indice, cant)
             alert(`El carrito ha sido actualizado`)
             mostrarArrayProducto(carrito)
@@ -187,8 +199,7 @@ function menu(nombre, catalogo) {
 }
 
 // inicio de simulador. llamada a la funcion principal
-let nombre = prompt(`¡Hola! Te damos la bienvenida al carrito de Cattalina DECO-HOME.
-    Por favor, abre tu consola para poder interactuar con las siguientes opciones.
-    Ingresa tu nombre para continuar`)
+let nombre = prompt(`¡Hola! Te damos la bienvenida al carrito de Cattalina DECO-HOME. \nPor favor, abre tu consola para poder interactuar con las siguientes opciones.\n
+    -Ingresa tu nombre para continuar`)
 
 menu(nombre, catalogo)
